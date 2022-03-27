@@ -1,3 +1,4 @@
+# DB 생성
 DROP DATABASE IF EXISTS jpaBoard;
 CREATE DATABASE jpaBoard;
 USE jpaBoard;
