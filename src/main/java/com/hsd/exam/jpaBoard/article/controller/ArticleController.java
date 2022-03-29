@@ -28,4 +28,20 @@ public class ArticleController {
         Optional<Article> article = articleRepository.findById(id);//게시물 n번쨰 조회기능,id 매개변수에 nL이 들어옵니다.
         return article.get();
     }
+    @RequestMapping("domodify")
+    @ResponseBody
+    public Article showModify(long id, String title, String body) {
+        Article article = articleRepository.findById(id).get();//게시물 n번쨰 조회기능,id 매개변수에 nL이 들어옵니다.
+        if (title != null) {
+            article.setTitle(title);
+        }
+        if (body != null) {
+            article.setTitle(body);
+        }
+
+        articleRepository.save(article);
+
+        return article;
+
+    }
 }
