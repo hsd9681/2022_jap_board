@@ -13,8 +13,6 @@ CREATE TABLE `user` (
     `name` CHAR(50) NOT NULL
 );
 
-SHOW TABLES;
-
 # 회원데이터 생성
 INSERT INTO `user`
 SET reg_date = NOW(),

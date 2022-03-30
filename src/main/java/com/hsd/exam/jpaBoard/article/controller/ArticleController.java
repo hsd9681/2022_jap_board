@@ -28,20 +28,26 @@ public class ArticleController {
         Optional<Article> article = articleRepository.findById(id);//게시물 n번쨰 조회기능,id 매개변수에 nL이 들어옵니다.
         return article.get();
     }
-    @RequestMapping("domodify")
+    @RequestMapping("doModify")
     @ResponseBody
-    public Article showModify(long id, String title, String body) {
-        Article article = articleRepository.findById(id).get();//게시물 n번쨰 조회기능,id 매개변수에 nL이 들어옵니다.
-        if (title != null) {
+    public Article doModify(long id, String title, String body) {
+        Article article = articleRepository.findById(id).get();
+
+        if ( title != null ) {
             article.setTitle(title);
         }
-        if (body != null) {
-            article.setTitle(body);
+        if ( body != null ) {
+            article.setBody(body);
         }
-
         articleRepository.save(article);
 
         return article;
+    }
 
+    @RequestMapping("doDelete")
+    @ResponseBody
+    public String doDelete(long id) {
+        articleRepository.deleteById(id);
+        return "%d번 게시물이 삭제되었습니다.".formatted(id);
     }
 }
