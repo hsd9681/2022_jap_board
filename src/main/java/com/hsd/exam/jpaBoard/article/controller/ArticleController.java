@@ -88,4 +88,17 @@ public class ArticleController {
 
         return "%d번 게시물이 생성되었습니다.".formatted(article.getId());
     }
+    @RequestMapping("doJoin")
+    @ResponseBody
+    public String doJoin(String name, String email, String password) {
+        User user = new User();
+        user.setRegDate(LocalDateTime.now());
+        user.setUpdateDate(LocalDateTime.now());
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(password);
+        userRepository.save(user);
+
+        return "%d번 회원이 생성되었습니다.".formatted(user.getId());
+    }
 }
