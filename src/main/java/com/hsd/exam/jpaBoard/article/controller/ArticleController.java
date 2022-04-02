@@ -92,11 +92,36 @@ public class ArticleController {
     @ResponseBody
     public String doJoin(String name, String email, String password) {
         User user = new User();
+
+        if(name == null || name.trim().length() == 0){
+            return "내용을 입력해 주세요.";
+        }
+
+        name = name.trim();
+
+        if(email == null || email.trim().length() == 0){
+            return "내용을 입력해 주세요.";
+        }
+
+        email = email.trim();
+        boolean existsByEmail = userRepository.existsByEmail(email);
+
+        if ( existsByEmail ) {
+            return "입력하신 이메일(%s)은 이미 사용중입니다.".formatted(email);
+        }
+
+
+
+        if(password == null || password.trim().length() == 0){
+            return "내용을 입력해 주세요.";
+        }
         user.setRegDate(LocalDateTime.now());
         user.setUpdateDate(LocalDateTime.now());
         user.setName(name);
+        password = password.trim();
         user.setEmail(email);
         user.setPassword(password);
+
         userRepository.save(user);
 
         return "%d번 회원이 생성되었습니다.".formatted(user.getId());
