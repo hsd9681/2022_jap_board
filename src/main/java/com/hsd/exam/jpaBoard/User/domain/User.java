@@ -1,6 +1,5 @@
-package com.hsd.exam.jpaBoard.article.domain;
+package com.hsd.exam.jpaBoard.User.domain;
 
-import com.hsd.exam.jpaBoard.User.domain.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,14 +9,13 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-public class Article {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
-    private String title;
-    private String body;
-    @ManyToOne
-    private User user;
+    private String email;
+    private String name;
+    private String password;
 }
