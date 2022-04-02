@@ -1,5 +1,6 @@
 package com.hsd.exam.jpaBoard.User.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,5 +18,6 @@ public class User {
     private LocalDateTime updateDate;
     private String email;
     private String name;
+    @JsonIgnore // 패스워드를 안보이게 하는 기능 json문서중 일부 무시(안보이게)
     private String password;
 }

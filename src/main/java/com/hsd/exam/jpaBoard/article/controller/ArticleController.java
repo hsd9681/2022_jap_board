@@ -1,5 +1,7 @@
 package com.hsd.exam.jpaBoard.article.controller;
 
+import com.hsd.exam.jpaBoard.User.dao.UserRepository;
+import com.hsd.exam.jpaBoard.User.domain.User;
 import com.hsd.exam.jpaBoard.article.dao.ArticleRepository;
 import com.hsd.exam.jpaBoard.article.domain.Article;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import java.util.Optional;
 public class ArticleController {
     @Autowired
     private ArticleRepository articleRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @RequestMapping("list")
     @ResponseBody
@@ -77,7 +81,9 @@ public class ArticleController {
         article.setUpdateDate(LocalDateTime.now());
         article.setTitle(title);
         article.setBody(body);
+        User user = userRepository.findById(3L).get();
 
+        article.setUser(user);
         articleRepository.save(article);
 
         return "%d번 게시물이 생성되었습니다.".formatted(article.getId());
