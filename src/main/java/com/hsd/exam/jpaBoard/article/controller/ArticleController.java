@@ -124,7 +124,6 @@ public class ArticleController {
         if (email == null || email.trim().length() == 0) {
             return "이메일을 입력해주세요.";
         }
-
         email = email.trim();
         //User user = userRepository.findByEmail(email).orElse(null); // 방법1
         Optional<User> user = userRepository.findByEmail(email); // 방법2
@@ -139,6 +138,17 @@ public class ArticleController {
             return "비밀번호가 일치하지 않습니다.";
         }
         return "%s님 환영합니다.".formatted(user.get().getName());
+    }
+    @RequestMapping("me")
+    @ResponseBody
+    public User showMe(long userId) {
+        Optional<User> user = userRepository.findById(userId);
+
+        if ( user.isEmpty() ) {
+            return null;
+        }
+
+        return user.get();
     }
 
 }
