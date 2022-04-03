@@ -88,7 +88,7 @@ public class ArticleController {
 
         return "%d번 게시물이 생성되었습니다.".formatted(article.getId());
     }
-    @RequestMapping("doJoin")
+   /* @RequestMapping("doJoin")
     @ResponseBody
     public String doJoin(String name, String email, String password) {
 
@@ -149,6 +149,6 @@ public class ArticleController {
         }
 
         return user.get();
-    }
+    }*/
 
 }
