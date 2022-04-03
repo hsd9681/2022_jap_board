@@ -126,21 +126,19 @@ public class ArticleController {
         }
 
         email = email.trim();
-        User user = userRepository.findByEmail(email).get();
-        if (user == null) {
+        //User user = userRepository.findByEmail(email).orElse(null); // 방법1
+        Optional<User> user = userRepository.findByEmail(email); // 방법2
+        if (user.isEmpty()) {
             return "일치하는 회원이 존재하지 않습니다.";
         }
         if (password == null || password.trim().length() == 0) {
             return "비밀번호를 입력해주세요.";
         }
         password = password.trim();
-        System.out.println("user.getPassword() : " + user.getPassword());
-        System.out.println("password : " + password);
-
-        if (user.getPassword().equals(password) == false) {
+        if (user.get().getPassword().equals(password) == false) {
             return "비밀번호가 일치하지 않습니다.";
         }
-        return "%s님 환영합니다.".formatted(user.getName());
+        return "%s님 환영합니다.".formatted(user.get().getName());
     }
 
 }
