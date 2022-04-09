@@ -6,6 +6,7 @@ import com.hsd.exam.jpaBoard.article.dao.ArticleRepository;
 import com.hsd.exam.jpaBoard.article.domain.Article;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -22,23 +23,11 @@ public class ArticleController {
     private UserRepository userRepository;
 
     @RequestMapping("list")
-    @ResponseBody
-    public String showList() {
+    public String showList(Model model) {
+        model.addAttribute("age", 40);
+        model.addAttribute("name", "폴");
 
-        List<Article> articles = articleRepository.findAll();
-
-        String html = "";
-
-        html += "<ul>";
-
-        for (Article article : articles) {
-            html += "<li>";
-            html += "%d번 / %s".formatted(article.getId(), article.getTitle());
-            html += "</li>";
-        }
-        html += "</ul>";
-
-        return html;
+        return "usr/article/list";
     }
 
     @RequestMapping("list2")
