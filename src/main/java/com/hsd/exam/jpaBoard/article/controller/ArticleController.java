@@ -31,12 +31,6 @@ public class ArticleController {
         return "usr/article/list";
     }
 
-    @RequestMapping("detail")
-    @ResponseBody
-    public Article showDetail(long id) {
-        Optional<Article> article = articleRepository.findById(id);//게시물 n번쨰 조회기능,id 매개변수에 nL이 들어옵니다.
-        return article.get();
-    }
     @RequestMapping("doModify")
     @ResponseBody
     public Article doModify(long id, String title, String body) {
@@ -56,6 +50,15 @@ public class ArticleController {
 
         return article;
     }
+    @RequestMapping("modify")
+    public String showModify(long id, Model model) {
+        Optional<Article> opArticle = articleRepository.findById(id);
+        Article article = opArticle.get();
+
+        model.addAttribute("article", article);
+
+        return "usr/article/modify";
+    }
 
     @RequestMapping("doDelete")
     @ResponseBody
@@ -72,6 +75,16 @@ public class ArticleController {
     public String showWrite() {
         return "usr/article/write";
     }
+    @RequestMapping("detail")
+    public String showDetail(long id, Model model) {
+        Optional<Article> opArticle = articleRepository.findById(id);
+        Article article = opArticle.get();
+
+        model.addAttribute("article", article);
+
+        return "usr/article/detail";
+    }
+
 
     @RequestMapping("doWrite")
     @ResponseBody
