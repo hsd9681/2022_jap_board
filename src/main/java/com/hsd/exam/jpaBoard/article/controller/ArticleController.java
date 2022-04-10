@@ -119,9 +119,17 @@ public class ArticleController {
         boolean isLogined = false;
         long loginedUserId = 0;
 
-        if ( session.getAttribute("loginedUserId") != null ) {
+        if (session.getAttribute("loginedUserId") != null) {
             isLogined = true;
-            loginedUserId = (long)session.getAttribute("loginedUserId");
+            loginedUserId = (long) session.getAttribute("loginedUserId");
+        }
+        if (isLogined == false) {
+            return """
+                    <script>
+                    alert('로그인 후 이용해주세요.');
+                    history.back();
+                    </script>
+                    """;
         }
 
         if (title == null || title.trim().length() == 0) {
