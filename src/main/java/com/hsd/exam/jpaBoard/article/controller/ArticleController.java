@@ -81,9 +81,28 @@ public class ArticleController {
                 """.formatted(article.getId(), article.getId());
     }
     @RequestMapping("modify")
-    public String showModify(long id, Model model) {
+    public String showModify(long id, HttpSession session, Model model) {
+        boolean isLogined = false;
+        long loginedUserId = 0;
+
+        if (session.getAttribute("loginedUserId") != null) {
+            isLogined = true;
+            loginedUserId = (long) session.getAttribute("loginedUserId");
+        }
+
+        if (isLogined == false) {
+            model.addAttribute("msg", "로그인 후 이용해주세요.");
+            model.addAttribute("historyBack", true);
+            return "common/js";
+        }
         Optional<Article> opArticle = articleRepository.findById(id);
         Article article = opArticle.get();
+        if (article.getUser().getId() != loginedUserId) {
+            model.addAttribute("msg", "권한이 없습니다.");
+            model.addAttribute("historyBack", true);
+            return "common/js";
+        }
+
         model.addAttribute("article", article);
 
         return "usr/article/modify";
