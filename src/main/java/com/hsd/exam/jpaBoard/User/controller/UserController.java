@@ -4,6 +4,7 @@ import com.hsd.exam.jpaBoard.User.dao.UserRepository;
 import com.hsd.exam.jpaBoard.User.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -48,6 +49,26 @@ public class UserController {
         return "%d번 회원이 생성되었습니다.".formatted(user.getId());
     }
 
+    @RequestMapping("login")
+    public String showLogin(HttpSession session, Model model) {
+        boolean isLogined = false;
+        long loginedUserId = 0;
+
+        if (session.getAttribute("loginedUserId") != null) {
+            isLogined = true;
+            loginedUserId = (long) session.getAttribute("loginedUserId");
+        }
+
+        if (isLogined) {
+            model.addAttribute("msg", "이미 로그인 되었습니다.");
+            model.addAttribute("historyBack", true);
+            return "common/js";
+        }
+
+        return "usr/user/login";
+    }
+
+
     @RequestMapping("doLogin")
     @ResponseBody
     public String doLogin(String email, String password, HttpServletRequest req, HttpServletResponse resp) {
@@ -76,6 +97,8 @@ public class UserController {
 
         return "%s님 환영합니다.".formatted(user.get().getName());
     }
+
+
     @RequestMapping("me")
     @ResponseBody
     public User showMe(HttpSession session) {
