@@ -66,4 +66,5 @@ update_date = NOW(),
 title = '제목 3',
 `body` = '내용 3',
 `user_id` = 3;
-ALTER TABLE `user` ADD UNIQUE INDEX (email);
+
+SELECT * FROM USER;

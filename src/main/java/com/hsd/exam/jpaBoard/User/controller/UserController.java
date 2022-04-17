@@ -73,20 +73,40 @@ public class UserController {
     @ResponseBody
     public String doLogin(String email, String password, HttpServletRequest req, HttpServletResponse resp) {
             if (email == null || email.trim().length() == 0) {
-                return "이메일을 입력해주세요.";
+                return """
+                    <script>
+                    alert('이메일을 입력해주세요.');
+                    history.back();
+                    </script>
+                    """;
             }
         email = email.trim();
         //User user = userRepository.findByEmail(email).orElse(null); // 방법1
         Optional<User> user = userRepository.findByEmail(email); // 방법2
         if (user.isEmpty()) {
-            return "일치하는 회원이 존재하지 않습니다.";
+            return """
+                    <script>
+                    alert('일치하는 회원이 존재하지 않습니다.');
+                    history.back();
+                    </script>
+                    """;
         }
         if (password == null || password.trim().length() == 0) {
-            return "비밀번호를 입력해주세요.";
+            return """
+                    <script>
+                    alert('비밀번호를 입력해주세요.');
+                    history.back();
+                    </script>
+                    """;
         }
         password = password.trim();
         if (user.get().getPassword().equals(password) == false) {
-            return "비밀번호가 일치하지 않습니다.";
+            return """
+                    <script>
+                    alert('비밀번호가 일치하지 않습니다.');
+                    history.back();
+                    </script>
+                    """;
         }
 
         HttpSession session = req.getSession();
@@ -95,7 +115,12 @@ public class UserController {
        // Cookie cookie = new Cookie("loginedUserId", user.get().getId() + "");
        // resp.addCookie(cookie);
 
-        return "%s님 환영합니다.".formatted(user.get().getName());
+        return """
+                <script>
+                alert('%s님 환영합니다.');
+                history.back();
+                </script>
+                """.formatted(user.get().getName());
     }
 
 
