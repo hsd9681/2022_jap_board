@@ -13,40 +13,28 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.Optional;
+
 @Controller
 @RequestMapping("/usr/user")
 public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @RequestMapping("doJoin")
-    @ResponseBody
-    public String doJoin(String name, String email, String password) {
+    @RequestMapping("doLogout")
+    public String doLogout(HttpSession session) {
+        boolean isLogined = false;
 
-        if(name == null || name.trim().length() == 0){
-            return "내용을 입력해 주세요.";
+        if (session.getAttribute("loginedUserId") != null) {
+            isLogined = true;
         }
-        name = name.trim();
-        if(email == null || email.trim().length() == 0){
-            return "내용을 입력해 주세요.";
+
+        if (isLogined == false) {
+            return "redirect:/";
         }
-        email = email.trim();
-        boolean existsByEmail = userRepository.existsByEmail(email);
-        if ( existsByEmail ) {
-            return "입력하신 이메일(%s)은 이미 사용중입니다.".formatted(email);
-        }
-        if(password == null || password.trim().length() == 0){
-            return "내용을 입력해 주세요.";
-        }
-        User user = new User();
-        user.setRegDate(LocalDateTime.now());
-        user.setUpdateDate(LocalDateTime.now());
-        user.setName(name);
-        password = password.trim();
-        user.setEmail(email);
-        user.setPassword(password);
-        userRepository.save(user);
-        return "%d번 회원이 생성되었습니다.".formatted(user.getId());
+
+        session.removeAttribute("loginedUserId");
+
+        return "redirect:/";
     }
 
     @RequestMapping("login")
@@ -68,21 +56,22 @@ public class UserController {
         return "usr/user/login";
     }
 
-
     @RequestMapping("doLogin")
     @ResponseBody
     public String doLogin(String email, String password, HttpServletRequest req, HttpServletResponse resp) {
-            if (email == null || email.trim().length() == 0) {
-                return """
+        if (email == null || email.trim().length() == 0) {
+            return """
                     <script>
                     alert('이메일을 입력해주세요.');
                     history.back();
                     </script>
                     """;
-            }
+        }
+
         email = email.trim();
-        //User user = userRepository.findByEmail(email).orElse(null); // 방법1
-        Optional<User> user = userRepository.findByEmail(email); // 방법2
+
+        Optional<User> user = userRepository.findByEmail(email);
+
         if (user.isEmpty()) {
             return """
                     <script>
@@ -91,6 +80,7 @@ public class UserController {
                     </script>
                     """;
         }
+
         if (password == null || password.trim().length() == 0) {
             return """
                     <script>
@@ -99,7 +89,9 @@ public class UserController {
                     </script>
                     """;
         }
+
         password = password.trim();
+
         if (user.get().getPassword().equals(password) == false) {
             return """
                     <script>
@@ -112,17 +104,52 @@ public class UserController {
         HttpSession session = req.getSession();
         session.setAttribute("loginedUserId", user.get().getId());
 
-       // Cookie cookie = new Cookie("loginedUserId", user.get().getId() + "");
-       // resp.addCookie(cookie);
-
         return """
                 <script>
                 alert('%s님 환영합니다.');
-                history.back();
+                location.replace('/');
                 </script>
                 """.formatted(user.get().getName());
     }
 
+    @RequestMapping("doJoin")
+    @ResponseBody
+    public String doJoin(String name, String email, String password) {
+        if (name == null || name.trim().length() == 0) {
+            return "이름을 입력해주세요.";
+        }
+
+        name = name.trim();
+
+        if (email == null || email.trim().length() == 0) {
+            return "이메일을 입력해주세요.";
+        }
+
+        email = email.trim();
+
+        boolean existsByEmail = userRepository.existsByEmail(email);
+
+        if (existsByEmail) {
+            return "입력하신 이메일(%s)은 이미 사용중입니다.".formatted(email);
+        }
+
+        if (password == null || password.trim().length() == 0) {
+            return "비밀번호를 입력해주세요.";
+        }
+
+        password = password.trim();
+
+        User user = new User();
+        user.setRegDate(LocalDateTime.now());
+        user.setUpdateDate(LocalDateTime.now());
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(password);
+
+        userRepository.save(user);
+
+        return "%d번 회원이 생성되었습니다.".formatted(user.getId());
+    }
 
     @RequestMapping("me")
     @ResponseBody
@@ -135,44 +162,16 @@ public class UserController {
             loginedUserId = (long) session.getAttribute("loginedUserId");
         }
 
-        if ( isLogined == false ) {
+        if (isLogined == false) {
             return null;
         }
 
         Optional<User> user = userRepository.findById(loginedUserId);
-        if ( user.isEmpty() ) {
+
+        if (user.isEmpty()) {
             return null;
         }
 
         return user.get();
     }
-
-    @RequestMapping("doLogout")
-    @ResponseBody
-    public String doLogout(HttpSession session) {
-        boolean isLogined = false;
-
-        if (session.getAttribute("loginedUserId") != null) {
-            isLogined = true;
-        }
-
-        if (isLogined == false) {
-            return """
-                    <script>
-                    alert('이미 로그아웃 되셨습니다.');
-                    history.back();
-                    </script>
-                    """;
-        }
-
-        session.removeAttribute("loginedUserId");
-
-        return """
-                    <script>
-                    alert('로그아웃 되셨습니다.');
-                    history.back();
-                    </script>
-                    """;
-}
-
 }
