@@ -146,6 +146,7 @@ public class UserController {
 
         return user.get();
     }
+
     @RequestMapping("doLogout")
     @ResponseBody
     public String doLogout(HttpSession session) {
@@ -156,12 +157,22 @@ public class UserController {
         }
 
         if (isLogined == false) {
-            return "이미 로그아웃 되었습니다.";
+            return """
+                    <script>
+                    alert('이미 로그아웃 되셨습니다.');
+                    history.back();
+                    </script>
+                    """;
         }
 
         session.removeAttribute("loginedUserId");
 
-        return "로그아웃 되었습니다.";
-    }
+        return """
+                    <script>
+                    alert('로그아웃 되셨습니다.');
+                    history.back();
+                    </script>
+                    """;
+}
 
 }
